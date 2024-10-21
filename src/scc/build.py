@@ -2,8 +2,8 @@ from ..buildlib import build_wheels
 
 NAME = 'scc'
 UPSTREAM_REPO = "https://github.com/boyter/scc" 
-VERSION = '3.2.0'
-PYPI_VERSION = '3.2.0'
+VERSION = '3.4.0'
+PYPI_VERSION = '3.4.0'
 SUMMARY = f"A thin wrapper to distribute {UPSTREAM_REPO} via pip."
 LICENSE = "The Unlicense (Unlicense)"
 
