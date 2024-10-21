@@ -2,8 +2,8 @@ from ..buildlib import build_wheels
 
 NAME = 'traefik'
 UPSTREAM_REPO = "https://github.com/traefik/traefik" 
-VERSION = '3.0.4'
-PYPI_VERSION = '3.0.4a1'
+VERSION = '3.1.6'
+PYPI_VERSION = '3.1.6a1'
 SUMMARY = f"A thin wrapper to distribute {UPSTREAM_REPO} via pip."
 LICENSE = "MIT"
 
