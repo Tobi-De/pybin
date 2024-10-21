@@ -2,8 +2,8 @@ from ..buildlib import build_wheels
 
 NAME = 'lazydocker'
 UPSTREAM_REPO = "https://github.com/jesseduffield/lazydocker"
-VERSION = '0.23.1'
-PYPI_VERSION = '0.23.1'
+VERSION = '0.23.3'
+PYPI_VERSION = '0.23.3'
 SUMMARY = f"A thin wrapper to distribute {UPSTREAM_REPO} via pip."
 LICENSE = "MIT"
 
