@@ -2,8 +2,8 @@ from ..buildlib import build_wheels
 
 NAME = 'dbmate'
 UPSTREAM_REPO = "https://github.com/amacneil/dbmate"
-VERSION = '2.21.0'
-PYPI_VERSION = '2.21.0'
+VERSION = '2.22.0'
+PYPI_VERSION = '2.22.0'
 SUMMARY = f"A thin wrapper to distribute {UPSTREAM_REPO} via pip."
 LICENSE = "MIT"
 
