@@ -2,8 +2,8 @@ from ..buildlib import build_wheels
 
 NAME = 'rclone'
 UPSTREAM_REPO = "https://github.com/rclone/rclone"
-VERSION = '1.68.1'
-PYPI_VERSION = '1.68.1'
+VERSION = '1.68.2'
+PYPI_VERSION = '1.68.2'
 SUMMARY = f"A thin wrapper to distribute {UPSTREAM_REPO} via pip."
 LICENSE = "MIT"
 
