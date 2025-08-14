@@ -128,5 +128,5 @@ def build_wheels(
             archive = response.read()
         compression_mode = url.split('.')[-1]
         compression_mode = compression_mode if compression_mode in ["gz", "bz2", "zip"] else None
-        summary = f"A thin wrapper to distribute {upstream_repo_url} via pip."
+        summary = f"Binary distribution of {name} CLI tool via pip."
         convert_archive_to_wheel(name, pypi_version, archive, tag, upstream_repo_url, summary, license_name, compression_mode)
