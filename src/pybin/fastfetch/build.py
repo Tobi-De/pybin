@@ -13,7 +13,6 @@ TARGET_TAG = {
     'macos-amd64': 'macosx_10_9_x86_64',     # Intel macOS (also works on Apple Silicon via Rosetta)
     'linux-aarch64': 'manylinux_2_17_aarch64.manylinux2014_aarch64.musllinux_1_1_aarch64',
     'linux-amd64': 'manylinux_2_12_x86_64.manylinux2010_x86_64.musllinux_1_1_x86_64',
-    'freebsd-amd64': 'freebsd_13_x86_64',    # FreeBSD support
 }
 URL_TAG = {f"{UPSTREAM_REPO}/releases/download/{VERSION}/{NAME}-{target}.tar.gz": tag for target, tag in TARGET_TAG.items()}
 
