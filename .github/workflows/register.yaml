@@ -6,6 +6,8 @@ on:
 jobs:
   register:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     container:
       image: ghcr.io/iomorphic/image/cicd-py:0.0.3
       volumes:
@@ -18,7 +20,14 @@ jobs:
 
       # Needed due to: https://github.com/actions/checkout/issues/766
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-      - env:
-          PYPI_USERNAME: __token__
-          PYPI_PASSWORD: ${{ secrets.PYPI_REGISTRY_KEY }}
-        run: just register
+      
+      # Build packages with version changes and collect in dist/ directory
+      - name: Build changed packages
+        run: just build_for_trusted_publishing
+
+      # Publish to PyPI using Trusted Publishers (only if dist/ has packages)
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        if: ${{ hashFiles('dist/*') != '' }}
+        with:
+          packages-dir: ./dist/
