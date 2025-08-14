@@ -8,18 +8,26 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
-    container:
-      image: ghcr.io/iomorphic/image/cicd-py:0.0.3
-      volumes:
-        - /usr/bin/docker:/usr/bin/docker
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: '2'
 
       # Needed due to: https://github.com/actions/checkout/issues/766
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      # Install required tools
+      - name: Install dependencies
+        run: |
+          # Install UV package manager
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.cargo/bin:$PATH"
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          
+          # Install Just task runner
+          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
       
       # Build packages with version changes and collect in dist/ directory
       - name: Build changed packages
