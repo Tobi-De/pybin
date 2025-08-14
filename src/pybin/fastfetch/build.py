@@ -2,17 +2,18 @@ from pybin.buildlib import build_wheels
 
 NAME = 'fastfetch'
 UPSTREAM_REPO = "https://github.com/fastfetch-cli/fastfetch"
-VERSION = '2.45.0'
-PYPI_VERSION = '2.45.0'
+VERSION = '2.50.1'
+PYPI_VERSION = '2.50.1'
 LICENSE = "MIT"
 
-# Fixed the duplicate 'macos-universal' key issue from original config
-# Version 2.45.0 uses macos-universal (universal binary for both Intel and ARM64)
-# Later versions (2.46.0+) changed to separate macos-amd64/macos-arm64 assets
+# Adapted for newer naming scheme used in versions 2.46.0+
+# Note: macos-arm64 is NOT available - only macos-amd64 (Intel Mac) is provided
+# The macos-amd64 binary should work on Apple Silicon Macs via Rosetta 2
 TARGET_TAG = {
-    'macos-universal': 'macosx_10_9_x86_64',  # Intel macOS - universal binary also works on ARM64
+    'macos-amd64': 'macosx_10_9_x86_64',     # Intel macOS (also works on Apple Silicon via Rosetta)
     'linux-aarch64': 'manylinux_2_17_aarch64.manylinux2014_aarch64.musllinux_1_1_aarch64',
     'linux-amd64': 'manylinux_2_12_x86_64.manylinux2010_x86_64.musllinux_1_1_x86_64',
+    'freebsd-amd64': 'freebsd_13_x86_64',    # FreeBSD support
 }
 URL_TAG = {f"{UPSTREAM_REPO}/releases/download/{VERSION}/{NAME}-{target}.tar.gz": tag for target, tag in TARGET_TAG.items()}
 

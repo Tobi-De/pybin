@@ -59,6 +59,7 @@ def convert_archive_to_wheel(
                         source = tar.extractfile(entry).read()
                         zip_info.file_size = len(source)
                         contents[zip_info] = source
+                        break  # Stop after finding the first matching file
     elif compression_mode in ['zip']:
         with ZipFile(io.BytesIO(archive), 'r') as z:
             binfilename = None
