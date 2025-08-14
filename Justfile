@@ -31,5 +31,48 @@ sync FORCE="noforce":
 @_register APP_NAME: init (build APP_NAME)
     uv run --no-sync twine upload -u $PYPI_USERNAME -p $PYPI_PASSWORD {{APP_NAME}}-dist/*
 
+# Build changed packages and collect wheels in dist/ directory for trusted publishing
+@build_for_trusted_publishing: init
+    #!/usr/bin/env bash
+    set -euo pipefail  # Exit on error, undefined vars, pipe failures
+    
+    # Create dist directory
+    rm -rf dist/
+    mkdir -p dist/
+    
+    # Find packages with version changes and build them
+    changed_files=$(git diff --name-only HEAD^1 HEAD -G"^PYPI_VERSION =" "*build.py" || true)
+    
+    if [ -z "$changed_files" ]; then
+        echo "No packages found with PYPI_VERSION changes"
+        echo "Creating empty dist/ directory"
+        ls -la dist/
+        exit 0
+    fi
+    
+    echo "Found changed build files:"
+    echo "$changed_files"
+    echo ""
+    
+    packages=$(echo "$changed_files" | xargs -n1 dirname | xargs -n1 basename | sort -u)
+    
+    # Build each package and copy wheels to dist/
+    for package in $packages; do
+        echo "Building package: $package"
+        just build $package
+        
+        if [ -d "${package}-dist" ]; then
+            cp ${package}-dist/* dist/ 2>/dev/null || true
+            echo "Copied wheels from ${package}-dist/ to dist/"
+        else
+            echo "Warning: ${package}-dist directory not found"
+        fi
+    done
+    
+    echo ""
+    echo "Built packages: $packages"
+    echo "Final dist/ contents:"
+    ls -la dist/
+
 @update: init
     uv run --no-sync python -m pybin.update
