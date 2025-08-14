@@ -26,12 +26,12 @@ sync FORCE="noforce":
     uv run --no-sync python -m pybin.{{APP_NAME}}.build
 
 @register:
-    git diff --name-only HEAD^1 HEAD -G"^PYPI_VERSION =" "*build.py" | uniq | xargs -n1 dirname | xargs -n1 basename | xargs -I {} sh -c 'just _register {}'
+    ls src/pybin/*/build.py | xargs -n1 dirname | xargs -n1 basename | xargs -I {} sh -c 'just _register {}'
 
 @_register APP_NAME: init (build APP_NAME)
     uv run --no-sync twine upload -u $PYPI_USERNAME -p $PYPI_PASSWORD {{APP_NAME}}-dist/*
 
-# Build changed packages and collect wheels in dist/ directory for trusted publishing
+# Build all packages and collect wheels in dist/ directory for trusted publishing
 @build_for_trusted_publishing: init
     #!/usr/bin/env bash
     set -euo pipefail  # Exit on error, undefined vars, pipe failures
@@ -40,21 +40,12 @@ sync FORCE="noforce":
     rm -rf dist/
     mkdir -p dist/
     
-    # Find packages with version changes and build them
-    changed_files=$(git diff --name-only HEAD^1 HEAD -G"^PYPI_VERSION =" "*build.py" || true)
+    # Find all packages with build.py files
+    packages=$(ls src/pybin/*/build.py | xargs -n1 dirname | xargs -n1 basename | sort -u)
     
-    if [ -z "$changed_files" ]; then
-        echo "No packages found with PYPI_VERSION changes"
-        echo "Creating empty dist/ directory"
-        ls -la dist/
-        exit 0
-    fi
-    
-    echo "Found changed build files:"
-    echo "$changed_files"
+    echo "Found packages to build:"
+    echo "$packages"
     echo ""
-    
-    packages=$(echo "$changed_files" | xargs -n1 dirname | xargs -n1 basename | sort -u)
     
     # Build each package and copy wheels to dist/
     for package in $packages; do
