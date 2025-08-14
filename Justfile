@@ -29,7 +29,7 @@ sync FORCE="noforce":
     ls src/pybin/*/build.py | xargs -n1 dirname | xargs -n1 basename | xargs -I {} sh -c 'just _register {}'
 
 @_register APP_NAME: init (build APP_NAME)
-    uv run --no-sync twine upload -u $PYPI_USERNAME -p $PYPI_PASSWORD {{APP_NAME}}-dist/*
+    uv run --no-sync twine upload --skip-existing -u $PYPI_USERNAME -p $PYPI_PASSWORD {{APP_NAME}}-dist/*
 
 # Build all packages and collect wheels in dist/ directory for trusted publishing
 @build_for_trusted_publishing: init
