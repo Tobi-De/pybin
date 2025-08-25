@@ -2,8 +2,8 @@ from pybin.buildlib import build_wheels
 
 NAME = 'minify'
 UPSTREAM_REPO = 'https://github.com/tdewolff/minify'
-VERSION = '2.23.11'
-PYPI_VERSION = '2.23.11'
+VERSION = '2.24.0'
+PYPI_VERSION = '2.24.0'
 LICENSE = "MIT"
 
 TARGET_TAG = {
