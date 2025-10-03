@@ -34,7 +34,7 @@ sync FORCE="noforce":
 # Build changed packages and collect wheels in dist/ directory for trusted publishing
 @build_for_trusted_publishing: init
     #!/usr/bin/env bash
-    set -euo pipefail  # Exit on error, undefined vars, pipe failures
+    set -uo pipefail  # Exit on undefined vars and pipe failures, but continue on errors
     
     # Create dist directory
     rm -rf dist/
@@ -56,23 +56,53 @@ sync FORCE="noforce":
     
     packages=$(echo "$changed_files" | xargs -n1 dirname | xargs -n1 basename | sort -u)
     
+    # Track failed builds
+    failed_packages=()
+    successful_packages=()
+    
     # Build each package and copy wheels to dist/
     for package in $packages; do
         echo "Building package: $package"
-        just build $package
-        
-        if [ -d "${package}-dist" ]; then
-            cp ${package}-dist/* dist/ 2>/dev/null || true
-            echo "Copied wheels from ${package}-dist/ to dist/"
+        if just build $package; then
+            if [ -d "${package}-dist" ]; then
+                cp ${package}-dist/* dist/ 2>/dev/null || true
+                echo "✓ Successfully built $package"
+                successful_packages+=("$package")
+            else
+                echo "✗ Warning: ${package}-dist directory not found for $package"
+                failed_packages+=("$package")
+            fi
         else
-            echo "Warning: ${package}-dist directory not found"
+            echo "✗ Failed to build $package"
+            failed_packages+=("$package")
         fi
+        echo ""
     done
     
+    echo "================================"
+    echo "Build Summary:"
+    echo "================================"
+    if [ ${#successful_packages[@]} -gt 0 ]; then
+        echo "✓ Successfully built (${#successful_packages[@]}):"
+        printf '  - %s\n' "${successful_packages[@]}"
+    fi
+    
+    if [ ${#failed_packages[@]} -gt 0 ]; then
+        echo ""
+        echo "✗ Failed to build (${#failed_packages[@]}):"
+        printf '  - %s\n' "${failed_packages[@]}"
+    fi
+    
     echo ""
-    echo "Built packages: $packages"
     echo "Final dist/ contents:"
     ls -la dist/
+    
+    # Exit with error if any builds failed
+    if [ ${#failed_packages[@]} -gt 0 ]; then
+        echo ""
+        echo "ERROR: ${#failed_packages[@]} package(s) failed to build"
+        exit 1
+    fi
 
 @update: init
     uv run --no-sync python -m pybin.update
