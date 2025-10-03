@@ -7,9 +7,10 @@ PYPI_VERSION = '2.14.0'
 LICENSE = "GPLv3"
 
 TARGET_TAG = {
-    'Darwin-x86_64': 'macosx_10_9_x86_64',
-    'Linux-arm64': 'manylinux_2_17_aarch64.manylinux2014_aarch64.musllinux_1_1_aarch64',
-    'Linux-x86_64': 'manylinux_2_12_x86_64.manylinux2010_x86_64.musllinux_1_1_x86_64',
+    'macos-x86_64': 'macosx_10_9_x86_64',
+    'macos-arm64': 'macosx_11_0_arm64',
+    'linux-arm64': 'manylinux_2_17_aarch64.manylinux2014_aarch64.musllinux_1_1_aarch64',
+    'linux-x86_64': 'manylinux_2_12_x86_64.manylinux2010_x86_64.musllinux_1_1_x86_64',
 }
 URL_TAG = {f"{UPSTREAM_REPO}/releases/download/v{VERSION}/{NAME}-{target}": tag for target, tag in TARGET_TAG.items()}
 
